@@ -16,13 +16,46 @@ const fetch = function(){
 const addWonder = function(){
     let newWonder = $("#new-wonder-input").val()
     let newLocation = $("#new-location-input").val()
-    //POST the newWonder to the server
+    
+    let data = { name: newWonder, location: newLocation }
+    $.post('/wonders', data, function (response) {
+        console.log("POST complete")
+        console.log(response)
+        fetch()
+    })
+}
+
+const updateVisited = function (wonder) {
+    console.log(wonder)
+    $.ajax({
+        url: `wonders/${wonder}`,
+        method: "PUT",
+        success: function (response) {
+            console.log("PUT complete")
+            fetch()
+        }
+    })
+}
+
+const deleteWonder = function (wonder) {
+    console.log(wonder)
+    $.ajax({
+        url: `/wonder/${wonder}`,
+        method: "DELETE",
+        success: function (response) {
+            fetch()
+         }
+    })
 }
 
 $("#wonders").on("click", ".visit", function(){
     let wonder = $(this).closest(".wonder").find(".name").text()
-    //PUT this to the server: update the wonder's `visited` status to `true`
+    updateVisited(wonder)
+})
+$("#wonders").on("click", ".delete", function(){
+    let wonder = $(this).closest(".wonder").find(".name").text()
+    console.log(wonder);
+    deleteWonder(wonder)
 })
 
-
-fetch() //load the data on page load
+fetch()
